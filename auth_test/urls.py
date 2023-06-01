@@ -18,7 +18,11 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 
+from maybe_oauth.views import AllBeans, AllUsers
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
+    path("beans", AllBeans.as_view()),
+    path("usah", AllUsers.as_view()),
 ]
