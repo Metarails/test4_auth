@@ -25,4 +25,5 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls")),
     path("beans", AllBeans.as_view()),
     path("usah", AllUsers.as_view()),
+    path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
 ]
