@@ -18,7 +18,7 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 
-from maybe_oauth.views import AllBeans, AllUsers
+from maybe_oauth.views import AllBeans, AllUsers, GettingThingsOut, ResponseThingsView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,4 +26,6 @@ urlpatterns = [
     path("beans/", AllBeans.as_view()),
     path("usah/", AllUsers.as_view()),
     path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
+    path("things/", GettingThingsOut.as_view()),
+    path("responsethings/", ResponseThingsView.as_view()),
 ]
