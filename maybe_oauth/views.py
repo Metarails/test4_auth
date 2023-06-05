@@ -3,6 +3,7 @@ import hashlib
 import random
 import string
 
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
@@ -33,16 +34,22 @@ class AllUsers(generics.ListAPIView):
 
 class GettingThingsOut(APIView):
     def get(self, request):
-        code_verifier = "".join(
-            random.choice(string.ascii_uppercase + string.digits)
-            for _ in range(random.randint(43, 128))
-        )
-        code_verifier = base64.urlsafe_b64encode(code_verifier.encode("utf-8"))
+        # code_verifier = "".join(
+        #     random.choice(string.ascii_uppercase + string.digits)
+        #     for _ in range(random.randint(43, 128))
+        # )
+        # code_verifier = base64.urlsafe_b64encode(code_verifier.encode("utf-8"))
 
-        code_challenge = hashlib.sha256(code_verifier).digest()
-        code_challenge = (
-            base64.urlsafe_b64encode(code_challenge).decode("utf-8").replace("=", "")
-        )
+        # code_challenge = hashlib.sha256(code_verifier).digest()
+        # code_challenge = (
+        #     base64.urlsafe_b64encode(code_challenge).decode("utf-8").replace("=", "")
+        # )
+
+        code_verifier = settings.CODE_VERIFIER
+        code_challenge = settings.CODE_CHALLENGE
+
+        manual_id = "lQA2LVXfu34gnLk1aZJYxXeRNwFozz2Ql7G1UuLv"
+        manual_secret = "pbkdf2_sha256$600000$vyqUsKxziF4piMk2vnsNxo$ItGIKLf73i0S7/E+7+FoD7enFEkhEds3MPmir5ASe6k="
 
         data = {
             "code_verifier": code_verifier,
@@ -50,7 +57,8 @@ class GettingThingsOut(APIView):
             "response_type": "code",
             "code_challenge_method": "S256",
             "client_id": settings.CLIENT_ID,
-            "redirect_uri": "http://127.0.0.1:8000/noexist/callback",
+            # "client_id": "lQA2LVXfu34gnLk1aZJYxXeRNwFozz2Ql7G1UuLv",
+            "redirect_uri": "http://127.0.0.1:8000/responsethings/",
             # "redirect_uri": "http://127.0.0.1:8000/responsethings",
         }
 
@@ -66,5 +74,51 @@ class GettingThingsOut(APIView):
 class ResponseThingsView(APIView):
     def get(self, request, *args, **kwargs):
         print("request: ", request)
-        data = {"request": request.data, "args": args, "kwargs": kwargs}
+        print("request data: ", request.data)
+        print("request data params:", request.query_params)
+        print("secret: ", settings.SECRET)
+
+        manual_id = "lQA2LVXfu34gnLk1aZJYxXeRNwFozz2Ql7G1UuLv"
+        manual_secret = "pbkdf2_sha256$600000$vyqUsKxziF4piMk2vnsNxo$ItGIKLf73i0S7/E+7+FoD7enFEkhEds3MPmir5ASe6k="
+
+        if "code" in request.query_params:
+            curl_test_1 = (
+                f"curl -X POST "
+                f'-H "Cache-Control: no-cache" '
+                f'-H "Content-Type: application/x-www-form-urlencoded" '
+                f'"http://127.0.0.1:8000/o/token/" '
+                # f'-d "client_id={settings.CLIENT_ID}" '
+                f'-d "client_id={manual_id}" '
+                # f'-d "client_secret={settings.SECRET}" '
+                f'-d "client_secret={manual_secret}" '
+                f'-d "code={request.query_params["code"]}" '
+                f'-d "code_verifier={settings.CODE_VERIFIER}" '
+                f'-d "redirect_uri=http://127.0.0.1:8000/responsethings/" '
+                f'-d "grant_type=authorization_code"'
+            )
+        else:
+            curl_test_1 = "derp"
+        print("curl: ", curl_test_1)
+        data = {
+            "request": request.data,
+            "args": args,
+            "kwargs": kwargs,
+            "query_params": request.query_params,
+            "curl": curl_test_1,
+        }
+
+        # post_data = {
+        #     "client_id": {settings.CLIENT_ID},
+        #     "client_secret": {settings.SECRET},
+        #     "code": {request.query_params["code"]},
+        #     "code_verifier": {settings.CODE_VERIFIER},
+        #     "redirect_uri": "http://127.0.0.1:8000/responsethings/",
+        #     "grant_type": "authorization_code",
+        # }
+        # r = requests.post("http://127.0.0.1:8000/o/token/", timeout=15, data=post_data)
+        # r.headers["content_type"] = "application/x-www-form-urlencoded"
+        # r.headers["Cache-Control"] = "no-cache"
+
+        # print("post request: ", r)
+
         return Response(data)
