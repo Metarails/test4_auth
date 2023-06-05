@@ -18,7 +18,13 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 
-from maybe_oauth.views import AllBeans, AllUsers, GettingThingsOut, ResponseThingsView
+from maybe_oauth.views import (
+    AllBeans,
+    AllUsers,
+    GettingThingsOut,
+    ResponseThingsView,
+    secret_page,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,4 +34,6 @@ urlpatterns = [
     path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
     path("things/", GettingThingsOut.as_view()),
     path("responsethings/", ResponseThingsView.as_view()),
+    path("oauth_test/", include("maybe_oauth.urls")),
+    path("secret/", secret_page, name="secret"),
 ]

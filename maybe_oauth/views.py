@@ -6,8 +6,13 @@ import string
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
+from oauth2_provider.views.generic import ProtectedResourceMixin, ProtectedResourceView
 from rest_framework import generics, status
+from rest_framework import views as rest_views
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -48,8 +53,8 @@ class GettingThingsOut(APIView):
         code_verifier = settings.CODE_VERIFIER
         code_challenge = settings.CODE_CHALLENGE
 
-        manual_id = "lQA2LVXfu34gnLk1aZJYxXeRNwFozz2Ql7G1UuLv"
-        manual_secret = "pbkdf2_sha256$600000$vyqUsKxziF4piMk2vnsNxo$ItGIKLf73i0S7/E+7+FoD7enFEkhEds3MPmir5ASe6k="
+        # manual_id = "lQA2LVXfu34gnLk1aZJYxXeRNwFozz2Ql7G1UuLv"
+        # manual_secret = "pbkdf2_sha256$600000$vyqUsKxziF4piMk2vnsNxo$ItGIKLf73i0S7/E+7+FoD7enFEkhEds3MPmir5ASe6k="
 
         data = {
             "code_verifier": code_verifier,
@@ -122,3 +127,26 @@ class ResponseThingsView(APIView):
         # print("post request: ", r)
 
         return Response(data)
+
+
+class ApiEndpointTest1_view(ProtectedResourceView):
+    def get(self, request, *args, **kwargs):
+        print("oath basic view, request:", request)
+        print("and user: ", request.user)
+        return HttpResponse("Hello, Oauth2!")
+
+
+class ApiEndpointTest2_view(generics.ListAPIView):
+    serializer_class = AllUsersSerializer
+    queryset = User.objects.all()
+
+    permission_classes = [TokenHasReadWriteScope]
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+        # return Response("data")
+
+
+@login_required()
+def secret_page(request, *args, **kwargs):
+    return HttpResponse("Secret contents!", status=200)
