@@ -16,6 +16,8 @@ from decouple import Csv, config
 
 CLIENT_ID = config("CLIENT_ID")
 SECRET = config("SECRET")
+CODE_VERIFIER = config("CODE_VERIFIER")
+CODE_CHALLENGE = config("CODE_CHALLENGE")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     "maybe_oauth",
     "oauth2_provider",
     "users",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
