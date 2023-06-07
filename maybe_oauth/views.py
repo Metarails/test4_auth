@@ -83,8 +83,8 @@ class ResponseThingsView(APIView):
         print("request data params:", request.query_params)
         print("secret: ", settings.SECRET)
 
-        manual_id = "lQA2LVXfu34gnLk1aZJYxXeRNwFozz2Ql7G1UuLv"
-        manual_secret = "pbkdf2_sha256$600000$vyqUsKxziF4piMk2vnsNxo$ItGIKLf73i0S7/E+7+FoD7enFEkhEds3MPmir5ASe6k="
+        # manual_id = "lQA2LVXfu34gnLk1aZJYxXeRNwFozz2Ql7G1UuLv"
+        # manual_secret = "pbkdf2_sha256$600000$vyqUsKxziF4piMk2vnsNxo$ItGIKLf73i0S7/E+7+FoD7enFEkhEds3MPmir5ASe6k="
 
         if "code" in request.query_params:
             curl_test_1 = (
@@ -92,10 +92,10 @@ class ResponseThingsView(APIView):
                 f'-H "Cache-Control: no-cache" '
                 f'-H "Content-Type: application/x-www-form-urlencoded" '
                 f'"http://127.0.0.1:8000/o/token/" '
-                # f'-d "client_id={settings.CLIENT_ID}" '
-                f'-d "client_id={manual_id}" '
-                # f'-d "client_secret={settings.SECRET}" '
-                f'-d "client_secret={manual_secret}" '
+                f'-d "client_id={settings.CLIENT_ID}" '
+                # f'-d "client_id={manual_id}" '
+                f'-d "client_secret={settings.SECRET}" '
+                # f'-d "client_secret={manual_secret}" '
                 f'-d "code={request.query_params["code"]}" '
                 f'-d "code_verifier={settings.CODE_VERIFIER}" '
                 f'-d "redirect_uri=http://127.0.0.1:8000/responsethings/" '
