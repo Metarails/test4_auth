@@ -146,6 +146,13 @@ class ApiEndpointTest2_view(generics.ListAPIView):
         return self.list(request, *args, **kwargs)
         # return Response("data")
 
+class ClientTypeThingsView(APIView):
+    
+    def get(self, request):
+        print("wohooS")
+
+        return Response ("somethign coming out")
+
 
 @login_required()
 def secret_page(request, *args, **kwargs):

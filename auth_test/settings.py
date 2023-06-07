@@ -19,6 +19,10 @@ SECRET = config("SECRET")
 CODE_VERIFIER = config("CODE_VERIFIER")
 CODE_CHALLENGE = config("CODE_CHALLENGE")
 
+
+CLIENT_TYPE_APP_ID=config("CLIENT_TYPE_APP_ID")
+CLIENT_TYPE_APP_SECRET=config("CLIENT_TYPE_APP_SECRET")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

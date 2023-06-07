@@ -2,7 +2,7 @@ import oauth2_provider.views as oauth2_views
 from django.conf import settings
 from django.urls import include, path
 
-from .views import ApiEndpointTest1_view, ApiEndpointTest2_view
+from .views import ApiEndpointTest1_view, ApiEndpointTest2_view, ClientTypeThingsView
 
 # OAuth2 provider endpoints
 oauth2_endpoint_views = [
