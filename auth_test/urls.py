@@ -24,7 +24,8 @@ from maybe_oauth.views import (
     GettingThingsOut,
     ResponseThingsView,
     secret_page,
-    ClientTypeThingsView
+    ClientTypeThingsView,
+    ApiEndpointTest2_view
 )
 
 urlpatterns = [
@@ -37,5 +38,6 @@ urlpatterns = [
     path("responsethings/", ResponseThingsView.as_view()),
     path("oauth_test/", include("maybe_oauth.urls")),
     path("secret/", secret_page, name="secret"),
-    path("client_things/", ClientTypeThingsView.as_view())
+    path("client_things/", ClientTypeThingsView.as_view()),
+    path("test_list_rest/", ApiEndpointTest2_view.as_view())
 ]
