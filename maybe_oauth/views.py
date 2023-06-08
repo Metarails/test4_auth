@@ -112,19 +112,29 @@ class ResponseThingsView(APIView):
             "curl": curl_test_1,
         }
 
-        # post_data = {
-        #     "client_id": {settings.CLIENT_ID},
-        #     "client_secret": {settings.SECRET},
-        #     "code": {request.query_params["code"]},
-        #     "code_verifier": {settings.CODE_VERIFIER},
-        #     "redirect_uri": "http://127.0.0.1:8000/responsethings/",
-        #     "grant_type": "authorization_code",
-        # }
-        # r = requests.post("http://127.0.0.1:8000/o/token/", timeout=15, data=post_data)
-        # r.headers["content_type"] = "application/x-www-form-urlencoded"
-        # r.headers["Cache-Control"] = "no-cache"
+        post_data = {
+            "client_id": {settings.CLIENT_ID},
+            "client_secret": {settings.SECRET},
+            "code": {request.query_params["code"]},
+            "code_verifier": {settings.CODE_VERIFIER},
+            "redirect_uri": "http://127.0.0.1:8000/responsethings/",
+            "grant_type": "authorization_code",
+        }
+        post_headers = {
+            "content_type": "application/x-www-form-urlencoded",
+            "Cache-Control": "no-cache",
+        }
+        r = requests.post(
+            "http://127.0.0.1:8000/o/token/",
+            headers=post_headers,
+            timeout=15,
+            data=post_data,
+        )
 
-        # print("post request: ", r)
+        print("post request: ", r)
+        print("response json: ", r.json())
+
+        data["respnse_json"] = r.json()
 
         return Response(data)
 
@@ -146,12 +156,49 @@ class ApiEndpointTest2_view(generics.ListAPIView):
         return self.list(request, *args, **kwargs)
         # return Response("data")
 
+
 class ClientTypeThingsView(APIView):
-    
     def get(self, request):
         print("wohooS")
 
-        return Response ("somethign coming out")
+        # encoding with base64
+        credential = "{0}:{1}".format(
+            settings.CLIENT_TYPE_APP_ID, settings.CLIENT_TYPE_APP_SECRET
+        )
+        print("credential for client: ", credential)
+
+        encoded_credential = base64.b64encode(credential.encode("utf-8"))
+
+        curl1 = (
+            f"curl -X POST "
+            f'-H "Authorization: Basic {encoded_credential}"'
+            f'-H "Cache-Control: no-cache" '
+            f'-H "Content-Type: application/x-www-form-urlencoded" '
+            f'"http://127.0.0.1:8000/o/token/" '
+            f'-d "grant_type=client_credentials"'
+        )
+
+        curl2 = (
+            f"curl -X POST "
+            f'-H "Authorization: Basic {settings.CLIENT_CREDENTIAL}"'
+            f'-H "Cache-Control: no-cache" '
+            f'-H "Content-Type: application/x-www-form-urlencoded" '
+            f'"http://127.0.0.1:8000/o/token/" '
+            f'-d "grant_type=client_credentials"'
+        )
+
+        print("curl1 (encoded):", curl1)
+        print("curl2 (settings):", curl2)
+
+        data = {
+            "cred": credential,
+            "cred_encoded": encoded_credential,
+            "cred_env": settings.CLIENT_CREDENTIAL,
+            "curl1": curl1,
+            "curl2": curl2,
+        }
+
+        return Response(data)
 
 
 @login_required()

@@ -20,8 +20,9 @@ CODE_VERIFIER = config("CODE_VERIFIER")
 CODE_CHALLENGE = config("CODE_CHALLENGE")
 
 
-CLIENT_TYPE_APP_ID=config("CLIENT_TYPE_APP_ID")
-CLIENT_TYPE_APP_SECRET=config("CLIENT_TYPE_APP_SECRET")
+CLIENT_TYPE_APP_ID = config("CLIENT_TYPE_APP_ID")
+CLIENT_TYPE_APP_SECRET = config("CLIENT_TYPE_APP_SECRET")
+CLIENT_CREDENTIAL = config("CLIENT_CREDENTIAL")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -63,7 +65,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "oauth2_provider.middleware.OAuth2TokenMiddleware",
 ]
 
